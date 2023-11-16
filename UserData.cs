@@ -1,6 +1,6 @@
 using System;
 
-namespace HexdogStudio.Persitence
+namespace HexTools.Persitence
 {
     /// <summary>
     /// <b>Userdata</b> is a gateway between the memory and the hard disk.
