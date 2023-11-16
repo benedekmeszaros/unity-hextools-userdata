@@ -70,7 +70,7 @@ namespace HexTools.Persitence
         public static T Deserialize<T>(byte[] bytes)
         {
             string json = Encoding.ASCII.GetString(bytes);
-            return (T)Convert.ChangeType(JsonUtility.FromJson<T>(json), typeof(T));
+            return JsonUtility.FromJson<T>(json);
         }
     }
 }
