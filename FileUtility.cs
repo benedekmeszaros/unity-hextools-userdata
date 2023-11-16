@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 
-namespace HexdogStudio.Persitence
+namespace HexTools.Persitence
 {
     public static class FileUtility
     {
