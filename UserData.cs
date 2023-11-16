@@ -50,7 +50,7 @@ namespace HexTools.Persitence
         {
             UserData<T> userData = new(file);
             if (!userData.Exists())
-                userData.Override(intiValue);
+                userData.Overwrite(intiValue);
             else
                 userData.Load();
             return userData;
@@ -68,7 +68,7 @@ namespace HexTools.Persitence
         /// Overwrite the current value of the file.
         /// </summary>
         /// <param name="value">New value.</param>
-        public void Override(T value)
+        public void Overwrite(T value)
         {
             this.value = value;
             Save();
