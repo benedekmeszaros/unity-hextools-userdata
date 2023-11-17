@@ -1,6 +1,15 @@
 # HexTools - UserData
 The UserData is an open-source generic class for Unity®. The goal of this class is simple and reliable I/O operations regardless of the given platform. It is quick and easy to implement, ideal for projects that are based on serialized documents. 
 Featuring base CRUD operation and more.
+<br/>
+
+## Supported platforms
+- Windows
+- Linux
+- Mac
+- Android
+- iOS
+- WebGL
 ## Consturctor
 | Implementation | Description |
 | :------------- | :---------- |
