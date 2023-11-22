@@ -43,3 +43,25 @@ Featuring base CRUD operation and more.
 | :------------- | :---------- |
 | `Serialize(T)` | Convert the given object to `byte[]`. |
 | `Deserialize(byte[])`| Convert the given `byte[]` to object. |
+
+# Examples
+
+```cs
+[System.Serializable]
+public class Progress
+{
+    public int coins;
+    public float highScore;
+}
+```
+```cs
+public class ProgressTracer : MonoBehaviour
+{
+    private UserData<Progress> progressData;
+
+    void Awake()
+    {
+        progressData = UserData<Progress>.Init("Saved/progress.json", new Progress());
+    }
+}
+```
