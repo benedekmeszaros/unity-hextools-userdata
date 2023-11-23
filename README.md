@@ -84,7 +84,7 @@ Periodic modifications may be preserved by invoking the `Save()` function. For a
 <br/>
 Basic approach:
 ```cs
-private void AddCoins(int coins)
+public void AddCoins(int coins)
 {
     Progress p = progressData.Value;
     p.coins += coins;
@@ -93,14 +93,14 @@ private void AddCoins(int coins)
 ```
 Using the unconditional `Modify` function:
 ```cs
-private void AddCoins(int coins)
+public void AddCoins(int coins)
 {
     progressData.Modify(p => p.coins += coins);
 }
 ```
 Using the conditional `Modify` function:
 ```cs
-private bool AddCoins(int coins)
+public bool AddCoins(int coins)
 {
     // Saving occurs exclusively when the provided anonymous function returns a true value.
     return progressData.Modify(p =>
@@ -115,6 +115,23 @@ private bool AddCoins(int coins)
     });
 }
 ```
+### Overwrite content
+```cs
+public void ResetProgress()
+{
+    progressData.Overwrite(new Progress());
+}
+```
+
+### Delete the corresponding file from disk
+```cs
+public bool RemoveProgress()
+{
+    //Returns true if the file is successfuly deleted.
+    return progressData.Remove();
+}
+```
+
 # License
 - [MIT](https://choosealicense.com/licenses/mit/)
 # Author
