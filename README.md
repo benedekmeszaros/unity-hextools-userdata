@@ -105,7 +105,7 @@ private bool AddCoins(int coins)
     // Saving occurs exclusively when the provided anonymous function returns a true value.
     return progressData.Modify(p =>
     {
-        if (p.score >= 10)
+        if (p.highScore >= 10)
         {
             p.coins += coins;
             return true;
