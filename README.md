@@ -1,6 +1,5 @@
 # HexTools - UserData
-The UserData is an open-source generic class for Unity®. The goal of this class is simple and reliable I/O operations regardless of the given platform. It is quick and easy to implement, ideal for projects that are based on serialized documents. 
-Featuring base CRUD operation and more.
+The UserData class, which is available as open-source and specifically designed for use in Unity®, serves as a versatile and generic solution. The primary objective of this class is to facilitate seamless and dependable Input/Output operations within Unity®, ensuring consistency and reliability across various platforms, irrespective of the inherent differences or peculiarities associated with each platform. This user-friendly class streamlines the complexities of handling Input/Output tasks, providing a straightforward yet robust mechanism that developers can employ to interact with data consistently, regardless of the specific Unity® platform they are targeting.
 <br/>
 
 ## Supported platforms
@@ -10,42 +9,45 @@ Featuring base CRUD operation and more.
 - Android
 - iOS
 - WebGL
+- VR
+## Supported Editor
+- Unity 2017 or later
+
 ## Consturctor
 | Implementation | Description |
 | :------------- | :---------- |
 | `UserData<T>(string)`| Initializes a new instance of the UserData<T> class that is empty. |
 ## Properties
-| Implementation | Description |
-| :------------- | :---------- |
-| `Value`| Return the object behind the given file location. <br/> <b>NOTE</b>: If the value is not loaded yet this function gona try it automatically. |
-| `Name`| Return the name of the file. |
-| `Extension`| Return the extension type of the file. |
-## Methods
-| Implementation | Description |
-| :------------- | :---------- |
-| `Save()`| Write the `Value` object to the disk. |
-| `Overwrite(T)`| Overwrite the current value of the file. <br />  <b>NOTE</b>: If the file not exists it will create one. |
-| `Load()`|  Return the value of the corresponding file and cach it, only if the file is exists. |
-| `Unload()`| Clear the value from the cach memory. |
-| `Remove()`| Delete the corresponding file from the disk. |
-| `Exists()`| Checking if the corresponding file exists. |
-| `Modify(Action<T>)`| Invoke the given action, then call the `Save()` function. |
-| `Modify(Func<T, bool>)` | Invoke the given action, then if it's returning value is `true` call `Save()` function.|
-| `GetHashCode()` | Serves as the default hash function.|
-| `Equals(object)`| Determines whether the specified object is equal to the current object. | 
-| `ToString()`| Returns the full path of the corresponding file. |
+| Implementation | Type |Description |
+| :------------- | :--- |:---------- |
+| `Extension`| `string` | Return the extension type of the file. |
+| `Name`| `string` | Return the name of the file. |
+| `Value`| `T` | Return the object behind the given file location. <br/> <b>NOTE</b>: If the value is not loaded yet this function gona try it automatically. |
 ## Static Method
-| Implementation | Description |
-| :------------- | :---------- |
-| `Init(string, T)`| Initializes a new instance of the UserData<T> class and create a corresponding file for it. <br />  <b>NOTE</b>: If the file is already exists, its value get higher priority. |
-## Overridable Methods for Custom Serialization
-| Implementation | Description |
-| :------------- | :---------- |
-| `Serialize(T)` | Convert the given object to `byte[]`. |
-| `Deserialize(byte[])`| Convert the given `byte[]` to object. |
+| Implementation | Return type | Description |
+| :------------- | :---------- | :---------- |
+| `Init(string, T)` |`Userdata<T>`| Initializes a new instance of the UserData<T> class and create a corresponding file for it. <br />  <b>NOTE</b>: If the file is already exists, its contetnt get loaded to the instance. |
+## Methods
+| Implementation | Return type | Description |
+| :------------- | :---------- | :---------- |
+| `Save()`| `void` |Write the `Value` object to the disk. |
+| `Overwrite(T)`| `void` |Overwrite the current value of the file. <br />  <b>NOTE</b>: If the file not exists it will create one. |
+| `Load()`| `T` |Return the value of the corresponding file and cach it, only if the file is exists. |
+| `Unload()`| `void` | Clear the value from the cach memory. |
+| `Remove()`| `bool` | Delete the corresponding file from the disk. |
+| `Exists()`| `bool` | Checking if the corresponding file exists. |
+| `Modify(Action<T>)`| `void` | Invoke the given action, then call the `Save()` function. |
+| `Modify(Func<T, bool>)` | `bool` | Invoke the given action, then if it's returning value is `true` call `Save()` function.|
+| `GetHashCode()` | `int` |Serves as the default hash function.|
+| `Equals(object)`| `bool` | Determines whether the specified object is equal to the current object. | 
+| `ToString()`| `string` |Returns the full path of the corresponding file. |
+## Overridable Methods
+| Implementation | Return type | Description |
+| :------------- | :---------- | :---------- |
+| `Deserialize(byte[])` | `T` | Convert the given `byte[]` to object. |
+| `Serialize(T)` | `byte[]` | Convert the given object to `byte[]`. |
 
 # Examples
-
 ```cs
 [System.Serializable]
 public class Progress
@@ -65,3 +67,7 @@ public class ProgressTracer : MonoBehaviour
     }
 }
 ```
+# License
+[MIT](https://choosealicense.com/licenses/mit/)
+# Author
+[Mészáros Benedek](https://www.github.com/benedekmeszaros)
