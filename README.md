@@ -30,7 +30,7 @@ The UserData class, which is available as open-source and specifically designed 
 ## Methods
 | Implementation | Return type | Description |
 | :------------- | :---------- | :---------- |
-| `Save()`| `void` |Write the `Value` object to the disk. |
+| `Save()`| `void` |Write the `Value` object to the disk. <br/> Each file is stored within the directory specified by [`Application.persistentDataPath`](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html). |
 | `Overwrite(T)`| `void` |Overwrite the current value of the file. <br />  <b>NOTE</b>: If the file not exists it will create one. |
 | `Load()`| `T` |Return the value of the corresponding file and cach it, only if the file is exists. |
 | `Unload()`| `void` | Clear the value from the cach memory. |
@@ -42,12 +42,14 @@ The UserData class, which is available as open-source and specifically designed 
 | `Equals(object)`| `bool` | Determines whether the specified object is equal to the current object. | 
 | `ToString()`| `string` |Returns the full path of the corresponding file. |
 ## Overridable Methods
+By default this class using Unity's `JsonUtility` for serialization.
 | Implementation | Return type | Description |
 | :------------- | :---------- | :---------- |
 | `Deserialize(byte[])` | `T` | Convert the given `byte[]` to object. |
 | `Serialize(T)` | `byte[]` | Convert the given object to `byte[]`. |
 
 # Examples
+The subsequent utilization of the `Progress` class, in conjunction with the `ProgressTracer` class, will be employed for purposes of demonstration.
 ```cs
 [System.Serializable]
 public class Progress
@@ -56,7 +58,10 @@ public class Progress
     public float highScore;
 }
 ```
+### Instantiate
 ```cs
+using HexTools.Persistence;
+
 public class ProgressTracer : MonoBehaviour
 {
     private UserData<Progress> progressData;
@@ -64,10 +69,53 @@ public class ProgressTracer : MonoBehaviour
     void Awake()
     {
         progressData = UserData<Progress>.Init("Saved/progress.json", new Progress());
+        // or
+        progressData = new UserData<Progress>("Saved/progress.json");
+        if(!progressData.Exists())
+            progressData.Overwrite(new Progress());
+        else
+            progressData.Load();
     }
 }
 ```
+### Saving modifications
+Periodic modifications may be preserved by invoking the `Save()` function. For a more resilient approach, users have the option to employ the `Modify(...)` function along with a lambda expression.
+<br/>
+<br/>
+Basic approach:
+```cs
+private void AddCoins(int coins)
+{
+    Progress p = progressData.Value;
+    p.coins += coins;
+    progressData.Save();
+}
+```
+Using the unconditional `Modify` function:
+```cs
+private void AddCoins(int coins)
+{
+    progressData.Modify(p => p.coins += coins);
+}
+```
+Using the conditional `Modify` function:
+```cs
+private bool AddCoins(int coins)
+{
+    // Saving occurs exclusively when the provided anonymous function returns a true value.
+    return progressData.Modify(p =>
+    {
+        if (p.score >= 10)
+        {
+            p.coins += coins;
+            return true;
+        }
+        else
+            return false;
+    });
+}
+```
 # License
-[MIT](https://choosealicense.com/licenses/mit/)
+- [MIT](https://choosealicense.com/licenses/mit/)
 # Author
-[Mészáros Benedek](https://www.github.com/benedekmeszaros)
+- [Mészáros Benedek](https://www.github.com/benedekmeszaros)
