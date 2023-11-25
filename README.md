@@ -9,6 +9,7 @@ The UserData class, which is available as open-source and specifically designed 
 - Android
 - iOS
 - WebGL
+- Console
 - VR
 ## Supported Editors
 - Unity 2017 or later
