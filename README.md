@@ -117,18 +117,17 @@ public void AddCoins(int coins)
 ```
 Using the conditional `Modify` function:
 ```cs
-public bool AddCoins(int coins)
+public bool UpdateHighScore(float score)
 {
     // Saving occurs exclusively when the provided anonymous function returns a true value.
     return progressData.Modify(p =>
     {
-        if (p.highScore >= 10)
-        {
-            p.coins += coins;
-            return true;
-        }
-        else
-            return false;
+        bool update = p.highScore < score;
+
+        if (update)
+           p.highScore = score;
+
+        return update;
     });
 }
 ```
