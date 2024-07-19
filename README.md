@@ -151,4 +151,4 @@ public bool RemoveProgress()
 # License
 - [MIT](https://choosealicense.com/licenses/mit/)
 # Author
-- [Mészáros Benedek](https://www.github.com/benedekmeszaros)
+- [Benedek Mészáros](https://www.github.com/benedekmeszaros)
