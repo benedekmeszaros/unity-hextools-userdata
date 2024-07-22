@@ -179,6 +179,10 @@ public bool RemoveProgress()
 
 <br>![Img](https://github.com/user-attachments/assets/12d03c74-2810-4cf9-9826-bef00b52f29a)
 
+Make sure to provide a valid relative path for the given instance.
+
+<br>![Img](https://github.com/user-attachments/assets/ced51e1c-7eca-4186-8396-2be7d1cb5c7e)
+
 # License
 - [MIT](https://choosealicense.com/licenses/mit/)
 # Author
