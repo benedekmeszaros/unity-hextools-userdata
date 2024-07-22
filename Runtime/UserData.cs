@@ -1,129 +1,226 @@
-using System;
-using System.IO;
-using System.Text;
 using UnityEngine;
+using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HexTools.Persitence
 {
-    /// <summary>
-    /// <b>Userdata</b> is a gateway between the memory and the hard disk.
-    /// <br><b>NOTE</b>: <b>T</b> must have System.Serializable attribute.</br>
-    /// </summary>
-    /// <typeparam name="T">Serializable type</typeparam>
-    public class UserData<T>
+    [Serializable]
+    public class UserData<T> : IData
     {
-        private readonly string file;
-        private T value;
-
-        /// <summary>
-        ///  The object behind the given file location. 
-        ///  <br><b>NOTE</b>: If the value is not loaded yet this function gona try it automatically</br>.
-        /// </summary>
-        public T Value
+        [Serializable]
+        private struct SingleField
         {
-            get
+            public T value;
+
+            public SingleField(T value)
             {
-                if (value == null)
-                    Load();
-                return value;
+                this.value = value;
             }
         }
-        /// <summary>
-        /// The name of the file.
-        /// </summary>
-        public string Name { get => FileUtility.GetFileName(file); }
-        /// <summary>
-        /// The extension type of the file.
-        /// </summary>
-        public string Extension { get => FileUtility.GetFileExtension(file); }
 
-        public UserData(string file)
+        [SerializeField] private string relativePath = "data.json";
+        [SerializeField] private T value;
+
+        /// <summary>
+        /// Gets the current value of the data.
+        /// </summary>
+        public T Value { get => value; }
+        /// <summary>
+        /// Gets the file name of the file without extension.
+        /// </summary>
+        public string Name { get => FileUtility.GetFileName(relativePath); }
+        /// <summary>
+        ///  Checks if the file exists.
+        /// </summary>
+        public bool Exists { get => FileUtility.Exists(relativePath); }
+        /// <summary>
+        /// Gets the file extension.
+        /// </summary>
+        public string Extension { get => FileUtility.GetFileExtension(relativePath); }
+        /// <summary>
+        /// Gets the relative path of the file.
+        /// </summary>
+        public string RelativePath { get => relativePath; }
+        /// <summary>
+        /// Gets the absolute path of the file.
+        /// </summary>
+        public string AbsolutePath { get => FileUtility.GetFilePath(relativePath); }
+
+
+        public UserData(string relativePath)
         {
-            this.file = file;
+            this.relativePath = relativePath;
+        }
+        public UserData(string relativePath, T value)
+        {
+            this.relativePath = relativePath;
+            this.value = value;
         }
 
         /// <summary>
-        /// Create a new <b>Userdata</b> instance and a corresponding file on the disk.
-        /// <br><b>NOTE</b>: If the file is already exists, its value get higher priority.</br>
-        /// </summary>
-        /// <param name="file">The full name of the file.</param>
-        /// <param name="intiValue">The fallback value of the corresponding file.</param>
-        /// <returns></returns>
-        public static UserData<T> Init(string file, T intiValue)
-        {
-            UserData<T> userData = new(file);
-            if (!userData.Exists())
-                userData.Overwrite(intiValue);
-            else
-                userData.Load();
-            return userData;
-        }
-
-        /// <summary>
-        /// Write to the disk.
+        /// Save the current value to the file. If the file does not exist, create a new one.
         /// </summary>
         public void Save()
         {
             if (value != null)
-                FileUtility.Write(Serialize(Value), file);
+                FileUtility.Write(Serialize(Value), relativePath);
         }
         /// <summary>
-        /// Overwrite the current value of the file.
+        /// Save the current value to the file asynchronously. If the file does not exist, create a new one.
         /// </summary>
-        /// <param name="value">New value.</param>
+        public async Task SaveAsync()
+        {
+            if (value != null)
+                await FileUtility.WriteAsync(Serialize(Value), relativePath);
+        }
+        /// <summary>
+        /// Save the current value to the file asynchronously. If the file does not exist, create a new one.
+        /// </summary>
+        /// <param name="onReady">Callback which gets called when the operation finished.</param>
+        public async void SaveAsync(Action onReady)
+        {
+            if (value != null)
+            {
+                await FileUtility.WriteAsync(Serialize(Value), relativePath);
+                onReady.Invoke();
+            }
+        }
+        /// <summary>
+        ///  Overwrites the current value with the specified value and saves it. If the file does not exist, create a new one.
+        /// </summary>
+        /// <param name="value">Replacement parameter.</param>
         public void Overwrite(T value)
         {
             this.value = value;
             Save();
         }
         /// <summary>
-        /// Load the value of the corresponding file if it exists.
+        ///  Overwrites the current value with the specified value and saves it asynchronously. If the file does not exist, create a new one.
         /// </summary>
-        /// <returns></returns>
+        /// <param name="value">Replacement parameter.</param>
+        public async Task OverwriteAsync(T value)
+        {
+            this.value = value;
+            await SaveAsync();
+        }
+        /// <summary>
+        ///  Overwrites the current value with the specified value and saves it asynchronously. If the file does not exist, create a new one.
+        /// </summary>
+        /// <param name="value">Replacement parameter.</param>
+        /// <param name="onReady">Callback which gets called when the operation finished.</param>
+        public async void OverwriteAsync(T value, Action onReady)
+        {
+            this.value = value;
+            await SaveAsync();
+            onReady.Invoke();
+        }
+
+        /// <summary>
+        /// Loads the value from the file.
+        /// </summary>
+        /// <returns>The read value.</returns>
         public T Load()
         {
-            byte[] bytes = FileUtility.Read(file);
+            Read();
+            return value;
+        }
+        /// <summary>
+        /// Loads the value from the file asynchronously.
+        /// </summary>
+        /// <returns>The read value.</returns>
+        public async Task<T> LoadAsync()
+        {
+            await ReadAsync();
+            return value;
+        }
+        /// <summary>
+        /// Loads the value from the file asynchronously.
+        /// </summary>
+        /// <param name="onReady">Callback which gets called when the operation finished.</param>
+        public async void LoadAsync(Action<T> onReady)
+        {
+            await ReadAsync();
+            onReady.Invoke(value);
+        }
+        /// <summary>
+        /// Loads the value from the file.
+        /// </summary>
+        public void Read()
+        {
+            byte[] bytes = FileUtility.Read(relativePath);
+            if (bytes != null)
+                value = Deserialize(bytes);
+        }
+        /// <summary>
+        /// Loads the value from the file asynchronously.
+        /// </summary>
+        public async Task<T> ReadAsync()
+        {
+            byte[] bytes = await FileUtility.ReadAsync(relativePath);
             if (bytes != null)
                 value = Deserialize(bytes);
             return value;
         }
         /// <summary>
-        /// Wipe the value from the memory.
+        /// Loads the value from the file asynchronously.
+        /// </summary>
+        /// <param name="onReady">Callback which gets called when the operation finished.</param>
+        public async void ReadAsync(Action<T> onReady)
+        {
+            byte[] bytes = await FileUtility.ReadAsync(relativePath);
+            if (bytes != null)
+                value = Deserialize(bytes);
+            onReady.Invoke(value);
+        }
+        /// <summary>
+        /// Delete the file from the disk.
+        /// </summary>
+        /// <returns>Is the file deleted?</returns>
+        public bool Remove()
+        {
+            return FileUtility.Delete(relativePath);
+        }
+        /// <summary>
+        /// Unloads the current value, setting it to the <b>default</b> value of <b>T</b>.
         /// </summary>
         public void Unload()
         {
             value = default;
         }
         /// <summary>
-        /// Delete the corresponding file from the disk.
+        /// Modifies the current value using the provided action and saves it.
         /// </summary>
-        /// <returns></returns>
-        public bool Remove()
-        {
-            return FileUtility.Delete(file);
-        }
-        /// <summary>
-        /// Checking if the file exists in the given location. 
-        /// </summary>
-        /// <returns></returns>
-        public bool Exists()
-        {
-            return FileUtility.Exists(file);
-        }
-        /// <summary>
-        /// Invoke the given action, then save the value.
-        /// </summary>
-        /// <param name="action">Modify action.</param>
+        /// <param name="action">Modification action.</param>
         public void Modify(Action<T> action)
         {
             action.Invoke(Value);
             Save();
         }
         /// <summary>
-        /// Invoke the given action, and if it return <b>true</b> save the value.
+        /// Modifies the current value using the provided action and saves it asynchronously.
         /// </summary>
-        /// <param name="action">Modify action.</param>
-        /// <returns></returns>
+        /// <param name="action">Modification action.</param>
+        public async Task ModifyAsync(Action<T> action)
+        {
+            action.Invoke(Value);
+            await SaveAsync();
+        }
+        /// <summary>
+        ///  Modifies the current value using the provided action asynchronously. Saves the value if the action returns <b>true</b>.
+        /// </summary>
+        /// <param name="action">Conditional modification action.</param>
+        /// <param name="onReady">Callback which gets called when the operation finished.</param>
+        public async void ModifyAsync(Action<T> action, Action onReady)
+        {
+            action.Invoke(Value);
+            await SaveAsync();
+            onReady?.Invoke();
+        }
+        /// <summary>
+        ///  Modifies the current value using the provided action. Saves the value if the action returns <b>true</b>.
+        /// </summary>
+        /// <param name="action">Conditional modification action.</param>
         public bool Modify(Func<T, bool> action)
         {
             var result = action.Invoke(Value);
@@ -131,106 +228,63 @@ namespace HexTools.Persitence
                 Save();
             return result;
         }
-
-        //Generic functions
-        public override bool Equals(object obj)
+        /// <summary>
+        ///  Modifies the current value using the provided action asynchronously. Saves the value if the action returns <b>true</b>.
+        /// </summary>
+        /// <param name="action">Conditional modification action.</param>
+        public async Task<bool> ModifyAsync(Func<T, bool> action)
         {
-            if (obj is UserData<T> userData)
-                return userData.file.Equals(file);
-            else
-                return false;
+            var result = action.Invoke(Value);
+            if (result)
+                await SaveAsync();
+            return result;
         }
-        public override int GetHashCode()
+        /// <summary>
+        ///  Modifies the current value using the provided action asynchronously. Saves the value if the action returns <b>true</b>.
+        /// </summary>
+        /// <param name="action">Conditional modification action.</param>
+        /// <param name="onReady">Callback which gets called when the operation finished.</param>
+        public async void ModifyAsync(Func<T, bool> action, Action<bool> onReady)
         {
-            int hash = 0;
-            if (file != null)
-                hash += 13 * file.GetHashCode();
-            if (value != null)
-                hash += 17 * value.GetHashCode();
-            return hash;
+            var result = action.Invoke(Value);
+            if (result)
+                await SaveAsync();
+            onReady?.Invoke(result);
         }
         public override string ToString()
         {
-            return FileUtility.GetFilePath(file);
+            return $"{AbsolutePath} - (UserData<{typeof(T).Name}>)";
         }
-
-        //Customizable functions
+        /// <summary>
+        /// Serializes the value to a <b>byte[]</b>.
+        /// </summary>
         public virtual byte[] Serialize(T value)
         {
-            return FileUtility.Serialize(value);
+            if (IsSingleField())
+                return FileUtility.Serialize(new SingleField(value));
+            else
+                return FileUtility.Serialize(value);
         }
+        /// <summary>
+        /// Deserialize the <b>byte[]</b> to a value of type <b>T</b>.
+        /// </summary>
         public virtual T Deserialize(byte[] bytes)
         {
-            return FileUtility.Deserialize(bytes);
+            if (IsSingleField())
+                return FileUtility.Deserialize<SingleField>(bytes).value;
+            else
+                return FileUtility.Deserialize<T>(bytes);
         }
 
-        private static class FileUtility
+        /// <summary>
+        /// Determines if the type <b>T</b> should be considered as a single field for serialization.
+        /// </summary>
+        private bool IsSingleField()
         {
-            public static void Write(byte[] bytes, string file)
-            {
-                string filePath = GetFilePath(file);
-                string folderPath = Path.GetDirectoryName(filePath);
-
-                if (!Directory.Exists(folderPath))
-                    Directory.CreateDirectory(folderPath);
-
-                File.WriteAllBytes(filePath, bytes);
-            }
-            public static void Write(byte[] bytes, string folder, string file)
-            {
-                string filePath = Path.Combine(Application.persistentDataPath, folder, file);
-                string folderPath = Path.GetDirectoryName(filePath);
-
-                if (!Directory.Exists(folderPath))
-                    Directory.CreateDirectory(folderPath);
-
-                File.WriteAllBytes(filePath, bytes);
-            }
-            public static byte[] Read(string filePath)
-            {
-                filePath = GetFilePath(filePath);
-                if (!File.Exists(filePath))
-                    return default;
-
-                return File.ReadAllBytes(filePath);
-            }
-            public static bool Delete(string filePath)
-            {
-                filePath = GetFilePath(filePath);
-                if (!File.Exists(filePath))
-                    return false;
-                else
-                {
-                    File.Delete(filePath);
-                    return true;
-                }
-            }
-            public static bool Exists(string filePath)
-            {
-                return File.Exists(GetFilePath(filePath));
-            }
-            public static string GetFileName(string filePath)
-            {
-                return Path.GetFileNameWithoutExtension(filePath);
-            }
-            public static string GetFileExtension(string filePath)
-            {
-                return Path.GetExtension(filePath);
-            }
-            public static string GetFilePath(string fileName)
-            {
-                return Path.Combine(Application.persistentDataPath, fileName);
-            }
-            public static byte[] Serialize(object userData)
-            {
-                string json = JsonUtility.ToJson(userData, true);
-                return Encoding.ASCII.GetBytes(json);
-            }
-            public static T Deserialize(byte[] bytes)
-            {
-                string json = Encoding.ASCII.GetString(bytes);
-                return JsonUtility.FromJson<T>(json);
-            }
+            Type type = typeof(T);
+            return type.IsValueType || 
+                type.IsArray || 
+                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>));
         }
     }
 }
