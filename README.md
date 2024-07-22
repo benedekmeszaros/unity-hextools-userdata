@@ -183,6 +183,13 @@ Make sure to provide a valid relative path for the given instance.
 
 <br>![Img](https://github.com/user-attachments/assets/ced51e1c-7eca-4186-8396-2be7d1cb5c7e)
 
+Play mode only utilities:
+- Create/Save
+- Read
+- Delete
+
+<br>![Img](https://github.com/user-attachments/assets/62f39db9-1dd9-4146-b284-6c5a3f399d50)
+
 # License
 - [MIT](https://choosealicense.com/licenses/mit/)
 # Author
