@@ -71,7 +71,7 @@ Enter the following git URL:
 | `Equals(object)`| `bool` | Determines whether the specified object is equal to the current object. | 
 | `ToString()`| `string` |Returns the full path of the corresponding file. |
 ## Overridable Methods
-By default this class using Unity's `JsonUtility` for serialization.
+By default this class using the built in `JsonUtility` for serialization.
 | Implementation | Return type | Description |
 | :------------- | :---------- | :---------- |
 | `Deserialize(byte[])` | `T` | Convert the given `byte[]` to object. |
