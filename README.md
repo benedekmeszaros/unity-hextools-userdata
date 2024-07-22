@@ -183,7 +183,7 @@ Make sure to provide a valid relative path for the given instance.
 
 <br>![Img](https://github.com/user-attachments/assets/ced51e1c-7eca-4186-8396-2be7d1cb5c7e)
 
-Play mode only utilities:
+Enter the `Play mode` to access the following utility controlls:
 - Create/Save
 - Read
 - Delete
