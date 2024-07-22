@@ -171,7 +171,7 @@ public bool RemoveProgress()
 ```
 
 ## Inspector view
-<b>UserData</b> has its own property drawer for visual debugging directly in the Inspector, which support deep serialization. Make sure to give `SerializeField` attribute to the desired field or make it 'public', otherwise the editor won't display it.
+<b>UserData</b> has its own property drawer for visual debugging directly in the Inspector, which support deep serialization. Make sure to give `SerializeField` attribute to the desired field or make it `public`, otherwise the editor won't display it.
 
 ```cs
 [SerializeField] private UserData<Progress> progressData;
