@@ -105,7 +105,7 @@ public class ProgressTracer : MonoBehaviour
     }
 }
 ```
-### Saving modifications
+### Save content/modifications
 Periodic modifications may be preserved by invoking the `Save()` function. For a more resilient approach, users have the option to employ the `Modify(...)` function along with a lambda expression.
 <br/>
 <br/>
@@ -141,6 +141,18 @@ public bool UpdateHighScore(float score)
     });
 }
 ```
+
+### Load content
+
+```cs
+public void LoadProgress()
+{
+    progressData.Read();
+    //or
+    progressData.Load();
+}
+```
+
 ### Overwrite content
 ```cs
 public void ResetProgress()
@@ -149,7 +161,7 @@ public void ResetProgress()
 }
 ```
 
-### Delete the corresponding file from disk
+### Delete content
 ```cs
 public bool RemoveProgress()
 {
