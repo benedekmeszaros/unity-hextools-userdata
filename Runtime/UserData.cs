@@ -51,7 +51,7 @@ namespace HexTools.Persitence
         /// <returns></returns>
         public static UserData<T> Init(string file, T intiValue)
         {
-            UserData<T> userData = new(file);
+            UserData<T> userData = new UserData<T>(file);
             if (!userData.Exists())
                 userData.Overwrite(intiValue);
             else
