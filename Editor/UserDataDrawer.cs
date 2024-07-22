@@ -15,11 +15,11 @@ namespace HexTools.Persitence.Edior
     {
         private readonly string PATH_PATTERN = @"^((\./|\.\./)?([a-zA-Z0-9_\-]+\/)*[a-zA-Z0-9_\-]+\.[a-zA-Z0-9]+)$";
         private readonly string WRAPPER_KEY = "hexdog-idata-wrapper";
-        private readonly GUIStyle foldoutStyle = new (EditorStyles.foldout)
+        private readonly GUIStyle foldoutStyle = new GUIStyle(EditorStyles.foldout)
         {
             fontStyle = FontStyle.Bold
         };
-        private readonly GUIStyle boldLabelStyle = new (EditorStyles.label)
+        private readonly GUIStyle boldLabelStyle = new GUIStyle(EditorStyles.label)
         {
             fontStyle = FontStyle.Bold
         };
@@ -36,7 +36,7 @@ namespace HexTools.Persitence.Edior
             EditorGUI.BeginProperty(position, label, property);
             property.serializedObject.Update();
             float singleFieldHeight = EditorGUIUtility.singleLineHeight;
-            Rect fieldRect = new(position.x, position.y, position.width, singleFieldHeight);
+            Rect fieldRect = new Rect(position.x, position.y, position.width, singleFieldHeight);
             bool isConnected = Application.isPlaying;
             Rect foldoutRect = new Rect(position.x, fieldRect.y, position.width, singleFieldHeight);
             SerializedProperty pathProperty = property.FindPropertyRelative("relativePath");
