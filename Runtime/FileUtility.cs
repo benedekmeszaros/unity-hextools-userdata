@@ -27,15 +27,15 @@ namespace HexTools.Persitence
 
             File.WriteAllBytes(filePath, bytes);
         }
-        public static async Task WriteAsync(byte[] bytes, string file)
+        public static Task WriteAsync(byte[] bytes, string path)
         {
-            string filePath = GetFilePath(file);
+            string filePath = GetFilePath(path);
             string folderPath = Path.GetDirectoryName(filePath);
 
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
 
-            await File.WriteAllBytesAsync(filePath, bytes);
+            return Task.Run(() => File.WriteAllBytes(path, bytes));
         }
         public static byte[] Read(string filePath)
         {
@@ -45,12 +45,12 @@ namespace HexTools.Persitence
 
             return File.ReadAllBytes(filePath);
         }
-        public static async Task<byte[]> ReadAsync(string filePath)
+        public static Task<byte[]> ReadAsync(string filePath)
         {
             filePath = GetFilePath(filePath);
             if (!File.Exists(filePath))
                 return null;
-            return await File.ReadAllBytesAsync(filePath);
+            return Task.Run(() => File.ReadAllBytes(filePath));
         }
         public static bool Delete(string filePath)
         {
