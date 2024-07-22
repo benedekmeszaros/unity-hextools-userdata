@@ -34,27 +34,39 @@ Enter the following git URL:
 | Implementation | Description |
 | :------------- | :---------- |
 | `UserData<T>(string)`| Initializes a new instance of the UserData<T> class that is empty. |
+| `UserData<T>(string, T)`| Initializes a new instance of the UserData<T> with a provided value. |
 ## Properties
 | Implementation | Type |Description |
 | :------------- | :--- |:---------- |
-| `Extension`| `string` | Return the extension type of the file. |
-| `Name`| `string` | Return the name of the file. |
-| `Value`| `T` | Return the object behind the given file location. <br/> <b>NOTE</b>: If the value is not loaded yet this function gona try it automatically. |
-## Static Method
-| Implementation | Return type | Description |
-| :------------- | :---------- | :---------- |
-| `Init(string, T)` |`Userdata<T>`| Initializes a new instance of the UserData<T> class and create a corresponding file for it. <br />  <b>NOTE</b>: If the file is already exists, its contetnt get loaded to the instance. |
+| `Value`| `T` | Gets the current value of the data. |
+| `Name`| `string` | Gets the file name of the file without extension. |
+| `Extension`| `string` | Gets the file extension. |
+| `Exists`| `bool` | Checks if the file exists. |
+| `RelativePath`| `string` | Gets the relative path of the file. |
+| `AbsolutePath`| `string` | Gets the absolute path of the file. |
 ## Methods
 | Implementation | Return type | Description |
 | :------------- | :---------- | :---------- |
-| `Save()`| `void` |Write the `Value` object to the disk. <br/> Each file is stored within the directory specified by [`Application.persistentDataPath`](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html). |
-| `Overwrite(T)`| `void` |Overwrite the current value of the file. <br />  <b>NOTE</b>: If the file not exists it will create one. |
-| `Load()`| `T` |Return the value of the corresponding file and cach it, only if the file is exists. |
-| `Unload()`| `void` | Clear the value from the cach memory. |
-| `Remove()`| `bool` | Delete the corresponding file from the disk. |
-| `Exists()`| `bool` | Checking if the corresponding file exists. |
-| `Modify(Action<T>)`| `void` | Invoke the given action, then call the `Save()` function. |
-| `Modify(Func<T, bool>)` | `bool` | Invoke the given action, then if it's returning value is `true` call `Save()` function.|
+| `Save()`| `void` | Save the current value to the file. If the file does not exist, create a new one. <br/> Each file is stored within the directory specified by [`Application.persistentDataPath`](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html). |
+| `SaveAsync()`| `Task` | Save the current value to the file asynchronously. |
+| `SaveAsync(Action)`| `void` | Save the current value to the file asynchronously. |
+| `Overwrite(T)`| `void` | Overwrites the current value with the specified value and saves it. If the file does not exist, create a new one. |
+| `OverwriteAsync(T)`| `Task` | Overwrites the current value with the specified value and saves it asynchronously. |
+| `OverwriteAsync(T, Action)`| `void` | Overwrites the current value with the specified value and saves it asynchronously. |
+| `Load()`| `T` | Loads the value from the file. |
+| `LoadAsync()`| `Task<T>` | Loads the value from the file asynchronously. |
+| `LoadAsync(Action<T>)`| `void` | Loads the value from the file asynchronously. |
+| `Read()`| `void` | Loads the value from the file. |
+| `ReadAsync()`| `Task<T>` | Loads the value from the file asynchronously. |
+| `ReadAsync(Action<T>)`| `void` | Loads the value from the file asynchronously. |
+| `Unload()`| `void` | Unloads the current value, setting it to the <b>default</b> value of <b>T</b>. |
+| `Remove()`| `bool` | Delete the file from the disk. |
+| `Modify(Action<T>)`| `void` | Modifies the current value using the provided action and saves it. |
+| `ModifyAsync(Action<T>)`| `Task` | Modifies the current value using the provided action and saves it asynchronously. |
+| `ModifyAsync(Action<T>, Action)`| `Task` | Modifies the current value using the provided action and saves it asynchronously. |
+| `Modify(Func<T, bool>)` | `bool` | Modifies the current value using the provided action. Saves the value if the action returns <b>true</b>. |
+| `ModifyAsync(Func<T, bool>)` | `Task<bool>` | Modifies the current value using the provided action asynchronously. Saves the value if the action returns <b>true</b>. |
+| `ModifyAsync(Func<T, bool>, Action<bool>)` | `void` | Modifies the current value using the provided action asynchronously. Saves the value if the action returns <b>true</b>. |
 | `GetHashCode()` | `int` |Serves as the default hash function.|
 | `Equals(object)`| `bool` | Determines whether the specified object is equal to the current object. | 
 | `ToString()`| `string` |Returns the full path of the corresponding file. |
@@ -76,22 +88,20 @@ public class Progress
 }
 ```
 ### Instantiate
+
+Create a new instance, then load its content. If the target file does not exist, the object keeps its initial value.
+
 ```cs
 using HexTools.Persistence;
 
 public class ProgressTracer : MonoBehaviour
 {
-    private UserData<Progress> progressData;
+    private UserData<Progress> progressData = new UserData<Progress>("saved/progress.json", new Progress());
 
     void Awake()
     {
-        progressData = UserData<Progress>.Init("Saved/progress.json", new Progress());
-        // or
-        progressData = new UserData<Progress>("Saved/progress.json");
-        if(!progressData.Exists())
-            progressData.Overwrite(new Progress());
-        else
-            progressData.Load();
+        // Load the content
+        progressData.Read();
     }
 }
 ```
