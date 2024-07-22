@@ -146,7 +146,7 @@ namespace HexTools.Persitence.Edior
             exists = VerifyExistance(relPath);
             saveIcon = (Texture2D)EditorGUIUtility.Load("Packages/com.hexdogstudio.userdata/Editor/Resources/save-icon.png");
             readIcon = (Texture2D)EditorGUIUtility.Load("Packages/com.hexdogstudio.userdata/Editor/Resources/read-icon.png");
-            trashIcon = (Texture2D)EditorGUIUtility.Load("Packages/com.hexdogstudio.userdata/Editor/Resources/tresh-icon.png");
+            trashIcon = (Texture2D)EditorGUIUtility.Load("Packages/com.hexdogstudio.userdata/Editor/Resources/trash-icon.png");
 
             if(saveIcon == null)
                 saveIcon = (Texture2D)EditorGUIUtility.Load("Assets/Persistence/Editor/Resources/save-icon.png");
