@@ -12,7 +12,7 @@ The UserData class, which is available as open-source and specifically designed 
 - Console
 - VR
 ## Supported Editors
-- Unity 2017 or later
+- Unity 2020 or later
 
 ## Import package
 In the Editor, you can access the Package Manager window through: Window > Package Manager, than:
