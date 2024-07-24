@@ -282,7 +282,8 @@ namespace HexTools.Persitence
         private bool IsSingleField()
         {
             Type type = typeof(T);
-            return type.IsValueType || 
+            return type == typeof(string) ||
+                type.IsValueType || 
                 type.IsArray || 
                 (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>));
         }
