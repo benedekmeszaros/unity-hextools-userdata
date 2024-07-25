@@ -12,11 +12,11 @@ The UserData class, which is available as open-source and specifically designed 
 - Console
 - VR
 ## Supported Editors
-- Unity 2020 or later
+- Unity 2017 or later
 
 ## Import package
 In the Editor, you can access the Package Manager window through: Window > Package Manager, than:
-1.  Open the add menu in the Package Manager's toolbar.
+1. Open the add menu in the Package Manager's toolbar.
 2. The options for adding packages appear. Add package from git URL button.
 3. Select Add package from git URL from the add menu. A text box and an Add button appear.
 4. Enter a valid Git URL in the text box and click Add.
