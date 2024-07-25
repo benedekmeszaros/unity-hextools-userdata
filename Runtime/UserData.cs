@@ -58,6 +58,17 @@ namespace HexTools.Persitence
             this.value = value;
         }
 
+        [Obsolete("Init method is deprecated and will be removed in the next patch. Use the constructor instead.")]
+        public static UserData<T> Init(string relativePath, T value)
+        {
+            UserData<T> userData = new UserData<T>(relativePath, value);
+            if (!userData.Exists)
+                userData.Overwrite(value);
+            else
+                userData.Load();
+            return userData;
+        }
+
         /// <summary>
         /// Save the current value to the file. If the file does not exist, create a new one.
         /// </summary>
