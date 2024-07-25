@@ -14,7 +14,7 @@ The UserData class, which is available as open-source and specifically designed 
 ## Supported Editors
 - Unity 2017 or later
 
-## Import package
+## Import Package
 In the Editor, you can access the Package Manager window through: Window > Package Manager, than:
 1. Open the add menu in the Package Manager's toolbar.
 2. The options for adding packages appear. Add package from git URL button.
