@@ -77,6 +77,34 @@ By default this class using the built in `JsonUtility` for serialization.
 | `Deserialize(byte[])` | `T` | Convert the given `byte[]` to object. |
 | `Serialize(T)` | `byte[]` | Convert the given object to `byte[]`. |
 
+# Asynchronous operations
+<b>UserData</b> provides asynchronous versions of each heavy I/O operations:
+- ReadAsync
+- LoadAsync
+- SaveAsync
+- OverwriteAsync
+- ModifyAsync
+
+# Inspector view
+<b>UserData</b> has its own property drawer for visual debugging directly in the Inspector, which support deep serialization. Make sure to give `SerializeField` attribute to the desired field or make it `public`, otherwise the editor won't display it.
+
+```cs
+[SerializeField] private UserData<Progress> progressData;
+```
+
+<br>![Img](https://github.com/user-attachments/assets/12d03c74-2810-4cf9-9826-bef00b52f29a)
+
+Make sure to provide a valid relative path for the given instance.
+
+<br>![Img](https://github.com/user-attachments/assets/ced51e1c-7eca-4186-8396-2be7d1cb5c7e)
+
+Enter `Play mode` to have access the following utility controlls:
+- Create/Save
+- Read
+- Delete
+
+<br>![Img](https://github.com/user-attachments/assets/62f39db9-1dd9-4146-b284-6c5a3f399d50)
+
 # Examples
 The subsequent utilization of the `Progress` class, in conjunction with the `ProgressTracer` class, will be employed for purposes of demonstration.
 ```cs
@@ -169,26 +197,43 @@ public bool RemoveProgress()
     return progressData.Remove();
 }
 ```
-
-## Inspector view
-<b>UserData</b> has its own property drawer for visual debugging directly in the Inspector, which support deep serialization. Make sure to give `SerializeField` attribute to the desired field or make it `public`, otherwise the editor won't display it.
-
+### Save async
 ```cs
-[SerializeField] private UserData<Progress> progressData;
+public void SaveProgress()
+{
+    progressData.SaveAsync(() => {
+        print("Game saved!");
+    });
+}
+
+// or
+
+public IEnumerator SaveProgress()
+{
+    yield return progressData.SaveAsync();
+    print("Game saved!");
+}
 ```
 
-<br>![Img](https://github.com/user-attachments/assets/12d03c74-2810-4cf9-9826-bef00b52f29a)
+### Load async
+```cs
+public void LoadProgress()
+{
+    progressData.LoadAsync(p => {
+        print("Progress loaded!");
+    });
+}
 
-Make sure to provide a valid relative path for the given instance.
+// or
 
-<br>![Img](https://github.com/user-attachments/assets/ced51e1c-7eca-4186-8396-2be7d1cb5c7e)
-
-Enter `Play mode` to have access the following utility controlls:
-- Create/Save
-- Read
-- Delete
-
-<br>![Img](https://github.com/user-attachments/assets/62f39db9-1dd9-4146-b284-6c5a3f399d50)
+public IEnumerator LoadProgress()
+{
+    var task = progressData.LoadAsync();
+    yield return task;
+    Progress p = task.Result;
+    print("Progress loaded!");
+}
+```
 
 # License
 - [MIT](https://choosealicense.com/licenses/mit/)
