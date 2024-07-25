@@ -48,28 +48,34 @@ Enter the following git URL:
 | Implementation | Return type | Description |
 | :------------- | :---------- | :---------- |
 | `Save()`| `void` | Save the current value to the file. If the file does not exist, create a new one. <br/> Each file is stored within the directory specified by [`Application.persistentDataPath`](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html). |
-| `SaveAsync()`| `Task` | Save the current value to the file asynchronously. |
-| `SaveAsync(Action)`| `void` | Save the current value to the file asynchronously. |
 | `Overwrite(T)`| `void` | Overwrites the current value with the specified value and saves it. If the file does not exist, create a new one. |
-| `OverwriteAsync(T)`| `Task` | Overwrites the current value with the specified value and saves it asynchronously. |
-| `OverwriteAsync(T, Action)`| `void` | Overwrites the current value with the specified value and saves it asynchronously. |
 | `Load()`| `T` | Loads the value from the file. |
-| `LoadAsync()`| `Task<T>` | Loads the value from the file asynchronously. |
-| `LoadAsync(Action<T>)`| `void` | Loads the value from the file asynchronously. |
 | `Read()`| `void` | Loads the value from the file. |
-| `ReadAsync()`| `Task<T>` | Loads the value from the file asynchronously. |
-| `ReadAsync(Action<T>)`| `void` | Loads the value from the file asynchronously. |
 | `Unload()`| `void` | Unloads the current value, setting it to the <b>default</b> value of <b>T</b>. |
 | `Remove()`| `bool` | Delete the file from the disk. |
 | `Modify(Action<T>)`| `void` | Modifies the current value using the provided action and saves it. |
-| `ModifyAsync(Action<T>)`| `Task` | Modifies the current value using the provided action and saves it asynchronously. |
-| `ModifyAsync(Action<T>, Action)`| `Task` | Modifies the current value using the provided action and saves it asynchronously. |
 | `Modify(Func<T, bool>)` | `bool` | Modifies the current value using the provided action. Saves the value if the action returns <b>true</b>. |
-| `ModifyAsync(Func<T, bool>)` | `Task<bool>` | Modifies the current value using the provided action asynchronously. Saves the value if the action returns <b>true</b>. |
-| `ModifyAsync(Func<T, bool>, Action<bool>)` | `void` | Modifies the current value using the provided action asynchronously. Saves the value if the action returns <b>true</b>. |
 | `GetHashCode()` | `int` |Serves as the default hash function.|
 | `Equals(object)`| `bool` | Determines whether the specified object is equal to the current object. | 
 | `ToString()`| `string` |Returns the full path of the corresponding file. |
+
+## Asynchronous Methods
+<b>UserData</b> provides asynchronous versions of each heavy I/O operations:
+| Implementation | Return type | Description |
+| :------------- | :---------- | :---------- |
+| `SaveAsync()`| `Task` | Save the current value to the file asynchronously. |
+| `SaveAsync(Action)`| `void` | Save the current value to the file asynchronously. |
+| `OverwriteAsync(T)`| `Task` | Overwrites the current value with the specified value and saves it asynchronously. |
+| `OverwriteAsync(T, Action)`| `void` | Overwrites the current value with the specified value and saves it asynchronously. |
+| `ReadAsync()`| `Task<T>` | Loads the value from the file asynchronously. |
+| `ReadAsync(Action<T>)`| `void` | Loads the value from the file asynchronously. |
+| `LoadAsync()`| `Task<T>` | Loads the value from the file asynchronously. |
+| `LoadAsync(Action<T>)`| `void` | Loads the value from the file asynchronously. |
+| `ModifyAsync(Action<T>)`| `Task` | Modifies the current value using the provided action and saves it asynchronously. |
+| `ModifyAsync(Action<T>, Action)`| `Task` | Modifies the current value using the provided action and saves it asynchronously. |
+| `ModifyAsync(Func<T, bool>)` | `Task<bool>` | Modifies the current value using the provided action asynchronously. Saves the value if the action returns <b>true</b>. |
+| `ModifyAsync(Func<T, bool>, Action<bool>)` | `void` | Modifies the current value using the provided action asynchronously. Saves the value if the action returns <b>true</b>. |
+
 ## Overridable Methods
 By default this class using the built in `JsonUtility` for serialization.
 | Implementation | Return type | Description |
@@ -77,15 +83,15 @@ By default this class using the built in `JsonUtility` for serialization.
 | `Deserialize(byte[])` | `T` | Convert the given `byte[]` to object. |
 | `Serialize(T)` | `byte[]` | Convert the given object to `byte[]`. |
 
-# Asynchronous operations
-<b>UserData</b> provides asynchronous versions of each heavy I/O operations:
-- ReadAsync
-- LoadAsync
-- SaveAsync
-- OverwriteAsync
-- ModifyAsync
+## Supported Types
 
-# Inspector view
+- Value types
+- String
+- Array
+- Generic list
+- Serializable classes
+
+# Inspector View
 <b>UserData</b> has its own property drawer for visual debugging directly in the Inspector, which support deep serialization. Make sure to give `SerializeField` attribute to the desired field or make it `public`, otherwise the editor won't display it.
 
 ```cs
@@ -133,7 +139,7 @@ public class ProgressTracer : MonoBehaviour
     }
 }
 ```
-### Save content/modifications
+### Save Content/Modifications
 Periodic modifications may be preserved by invoking the `Save()` function. For a more resilient approach, users have the option to employ the `Modify(...)` function along with a lambda expression.
 <br/>
 <br/>
@@ -170,7 +176,7 @@ public bool UpdateHighScore(float score)
 }
 ```
 
-### Load content
+### Load Content
 
 ```cs
 public void LoadProgress()
@@ -181,7 +187,7 @@ public void LoadProgress()
 }
 ```
 
-### Overwrite content
+### Overwrite Content
 ```cs
 public void ResetProgress()
 {
@@ -189,7 +195,7 @@ public void ResetProgress()
 }
 ```
 
-### Delete content
+### Delete Content
 ```cs
 public bool RemoveProgress()
 {
@@ -197,7 +203,7 @@ public bool RemoveProgress()
     return progressData.Remove();
 }
 ```
-### Save async
+### Save Async
 ```cs
 public void SaveProgress()
 {
@@ -215,7 +221,7 @@ public IEnumerator SaveProgress()
 }
 ```
 
-### Load async
+### Load Async
 ```cs
 public void LoadProgress()
 {
